@@ -53,6 +53,10 @@ class Aggregates:
 def compute_aggregates(df: pd.DataFrame, categories: CategoryConfig) -> Aggregates:
     df = df.copy()
     df["amount"] = pd.to_numeric(df["amount"], errors="coerce").fillna(0.0)
+    # Drop hidden categories (e.g. card payments / transfers) so they don't count as spending.
+    hidden = categories.hidden_names
+    if hidden:
+        df = df[~df["category"].isin(hidden)].copy()
     months = sorted(m for m in df["month_label"].dropna().unique())
     total = float(df["amount"].sum())
 

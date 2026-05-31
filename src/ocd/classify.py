@@ -75,7 +75,8 @@ def _classification_schema(names: list[str]) -> dict:
     }
 
 
-def _system_prompt(categories: CategoryConfig) -> str:
+def _system_prompt(categories: CategoryConfig,
+                   examples: Optional[dict[str, str]] = None) -> str:
     lines = [
         "You are a precise personal-finance assistant that categorizes credit-card purchases.",
         "Assign each merchant to exactly ONE of the user's categories below, based on the",
@@ -87,6 +88,13 @@ def _system_prompt(categories: CategoryConfig) -> str:
     for c in categories.categories:
         lines.append(f"- {c.name}: {c.description}")
     lines.append(f"- {UNCATEGORIZED}: use only if no category plausibly fits.")
+    if examples:
+        # User-confirmed labels — generalize this intent to similar merchants.
+        lines.append("")
+        lines.append("The user has CONFIRMED these merchant → category labels. Treat them as ground "
+                     "truth and categorize similar merchants consistently with this intent:")
+        for merchant, cat in list(examples.items())[:40]:
+            lines.append(f"- {merchant} → {cat}")
     lines.append("")
     lines.append("Return strict JSON: {\"category\": <one of the names above>, "
                  "\"confidence\": <0..1>, \"rationale\": <short reason>}. "
@@ -154,17 +162,25 @@ def classify_transactions(
     categories: Optional[CategoryConfig] = None,
     use_memory: bool = True,
     progress_cb: Optional[Callable[[int, int, str], None]] = None,
+    pinned: Optional[dict[str, str]] = None,
+    examples: Optional[dict[str, str]] = None,
 ) -> pd.DataFrame:
-    """Categorize a raw-transactions DataFrame. Returns a new DataFrame with category columns."""
+    """Categorize a raw-transactions DataFrame. Returns a new DataFrame with category columns.
+
+    ``pinned`` (merchant_key → category) are user-confirmed labels held fixed without asking the
+    model. ``examples`` are merchant_key → category pairs injected into the prompt as few-shot
+    guidance so the model generalizes the user's intent. Set ``use_memory=False`` to send every
+    non-pinned merchant to the model instead of short-circuiting on the exact-match memory."""
     categories = categories or cfg.load_categories()
     memory = cfg.load_merchant_memory() if use_memory else {}
+    pinned = pinned or {}
     valid = set(categories.all_names)
 
     df = df.copy()
     df["merchant_key"] = df["description"].map(normalize_merchant)
     unique_merchants = sorted(df["merchant_key"].unique())
 
-    system = _system_prompt(categories)
+    system = _system_prompt(categories, examples=examples)
     schema = _classification_schema(categories.all_names)
     rc = models.get_role_config("classifier")
     client = None  # lazily created only if an LLM call is actually needed
@@ -172,7 +188,9 @@ def classify_transactions(
     verdicts: dict[str, MerchantVerdict] = {}
     total = len(unique_merchants)
     for i, merchant in enumerate(unique_merchants, 1):
-        if use_memory and merchant in memory and memory[merchant] in valid:
+        if merchant in pinned and pinned[merchant] in valid:
+            verdicts[merchant] = MerchantVerdict(pinned[merchant], 1.0, "user-confirmed", "user")
+        elif use_memory and merchant in memory and memory[merchant] in valid:
             verdicts[merchant] = MerchantVerdict(memory[merchant], 1.0,
                                                  "remembered from a previous correction", "memory")
         else:

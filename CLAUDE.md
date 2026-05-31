@@ -32,10 +32,10 @@ conflict detection and (b) folds confirmed merchant→category mappings into
 | `config.py` | Pydantic models + YAML I/O for categories, merchant memory, and run metadata (the gate). |
 | `models.py` | Role-based model selection (`classifier`/`extractor`/`insights`/`embeddings`/`ocr`). One OpenAI-compatible client. |
 | `extract.py` | Step 1. Deterministic monopoly parsing first; LLM fallback (`extractor` role) reads the PDF text when monopoly raises or finds nothing. Purchase filtering. |
-| `classify.py` | Step 2 auto pass. Per-unique-merchant LLM classification → `{category, confidence, rationale}`. |
+| `classify.py` | Step 2 auto pass. Per-unique-merchant LLM classification → `{category, confidence, rationale}`. `classify_transactions` takes `pinned` (user-confirmed, held fixed) + `examples` (few-shot in the prompt); `use_memory=False` sends every non-pinned merchant to the model instead of the exact-match lookup. |
 | `review.py` | Step 2 interactive. Attention flags, corrections, finalization. |
 | `report.py` | Step 3. Aggregation, Plotly figures (incl. `fig_budget_ratio` = trailing-30-day spend ÷ monthly limit), rule-based insights (+ optional LLM summary), HTML/MD render. |
-| `service.py` | **Shared service layer** — the single source of truth both the web app and CLI call. Per-user ops (categories, statements, analyze, review, corrections, finalize+report) each run under `paths.use_root(user_home)`. |
+| `service.py` | **Shared service layer** — the single source of truth both the web app and CLI call. Per-user ops (categories, statements, analyze, review, corrections, finalize+report) each run under `paths.use_root(user_home)`. `recategorize` pins user fixes, persists them to memory, re-runs the model (`use_memory=False`); `detect_conflicts` flags a merchant labelled two ways; `_clarification_suggestion` asks the model how to clarify ambiguous categories. |
 | `server.py` | FastAPI backend + auth for `ocd serve`. Thin HTTP glue over `service`. `/api/analyze/stream` streams per-stage progress (SSE, worker-thread + queue). |
 | `auth.py` | Accounts (PBKDF2 password hashing → `data/users/accounts.yaml`) + in-memory sessions. Stdlib only. |
 | `web/index.html` | Single-page frontend: login gate + 4 sections (Preferences, Statements, Review&correct, Report). The only UI. |
@@ -93,6 +93,11 @@ generate synthetic statements → `ocd extract` → `ocd categorize --finalize` 
   don't reintroduce module-level path constants or `paths.X` *default arguments* (they'd bind once at
   import and ignore the context) — resolve inside the function body. `USERS_DIR`/`ACCOUNTS_YAML`/
   `user_home()` stay on the **base** root, never the context root.
+- **Corrections teach the model.** "Save corrections & re-run" → `/api/recategorize` (SSE): apply edits →
+  `detect_conflicts` (a merchant labelled ≥2 ways is contradictory since classification is per-merchant —
+  the UI prompts to pick one and re-runs) → fold confirmed labels into merchant memory → re-categorize
+  with those labels `pinned` + as few-shot `examples`, `use_memory=False`. Terminal SSE events:
+  `conflict` | `done` (carries the refreshed review + a clarification `suggestion`) | `error`.
 - **Progress streaming.** `service.analyze` takes an `on_event` callback; `/api/analyze/stream` runs it
   on a worker thread, pushing events onto a queue that the SSE generator drains
   (`stage ∈ extract|categorize|categorized|error`). The worker re-enters `paths.use_root(home)` itself
@@ -107,7 +112,7 @@ generate synthetic statements → `ocd extract` → `ocd categorize --finalize` 
 - `transactions_raw.csv` columns: `extract.RAW_COLUMNS`.
 - categorized CSV adds: `classify.CATEGORIZED_COLUMNS_EXTRA` (`category, confidence, rationale,
   classified_by, merchant_key, year, month, month_label`). `classified_by ∈ {memory, llm, fallback, user}`.
-- `config/categories.yaml` → `{categories: [{name, description, monthly_limit}]}` (description feeds the prompt).
+- `config/categories.yaml` → `{categories: [{name, description, monthly_limit, hidden}]}` (description feeds the prompt; `hidden: true` categories are still classifiable but `report.compute_aggregates` drops them so payments/transfers don't count as spend).
 - `config/merchant_memory.yaml` → `{merchants: {<merchant_key>: <category>}}` (grows on finalize).
 - `data/categorized_meta.yaml` → `RunMeta` (`finalized, finalized_at, period, n_transactions`) — the gate.
 

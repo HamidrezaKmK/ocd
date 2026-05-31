@@ -70,11 +70,16 @@ ocd serve         # starts a local server, then open http://localhost:8000
 `data/users/<user>/`. The single-page app walks the full pipeline as four steps:
 
 1. **⚙️ Preferences** — add/edit/remove categories (name, description, monthly limit). The description
-   is sent to the model, so it categorizes the way *you* think.
+   is sent to the model, so it categorizes the way *you* think. Mark a category **Hidden** to keep it
+   out of the report (e.g. card payments / transfers between your own accounts, which shouldn't count
+   as spending) — it's still classifiable, just excluded from charts, insights, and totals.
 2. **📄 Statements** — drag in PDFs (they persist in your folder), then **Analyze** with **live
    per-stage progress**: upload %, extract (per file), categorize (per merchant) — streamed over SSE.
-3. **📝 Review & correct** — fix any categories the model got wrong (flagged rows highlighted), then
-   finalize.
+3. **📝 Review & correct** — fix any categories the model got wrong (flagged rows highlighted).
+   **Save corrections** then *teaches* the model: your fixes are pinned as ground truth and fed back
+   as examples, and Ollama re-categorizes everything you haven't confirmed (it re-decides rather than
+   relying on the exact-match lookup). If you label the same merchant two different ways, it asks you
+   to pick one; if merchants stay ambiguous, it suggests how to clarify your category descriptions.
 4. **📊 Report** — the interactive dashboard, built on finalize.
 
 Everything runs on this machine (monopoly extract + local Ollama categorize + report); nothing leaves

@@ -23,6 +23,9 @@ class Category(BaseModel):
     name: str
     description: str = ""
     monthly_limit: float = Field(0.0, ge=0.0)
+    # Hidden categories are still classifiable (e.g. card payments / transfers between your own
+    # accounts) but are excluded from the report so they don't double-count as spending.
+    hidden: bool = False
 
     @field_validator("name")
     @classmethod
@@ -63,6 +66,11 @@ class CategoryConfig(BaseModel):
         """Category names plus the always-available Uncategorized bucket."""
         return self.names + [UNCATEGORIZED]
 
+    @property
+    def hidden_names(self) -> set[str]:
+        """Categories marked hidden — excluded from the report (e.g. payments/transfers)."""
+        return {c.name for c in self.categories if c.hidden}
+
     def limit_for(self, name: str) -> float:
         for c in self.categories:
             if c.name == name:
@@ -99,7 +107,8 @@ def save_categories(config: CategoryConfig) -> None:
     paths.ensure_dirs()
     payload = {
         "categories": [
-            {"name": c.name, "description": c.description, "monthly_limit": c.monthly_limit}
+            {"name": c.name, "description": c.description,
+             "monthly_limit": c.monthly_limit, "hidden": c.hidden}
             for c in config.categories
         ]
     }

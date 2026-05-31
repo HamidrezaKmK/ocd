@@ -192,6 +192,40 @@ def build_app():
         except FileNotFoundError:
             raise HTTPException(status_code=400, detail="Run Analyze first.")
 
+    @app.post("/api/recategorize")
+    def recategorize(body: CorrectionsIn, user: str = Depends(current_user)):
+        """Apply the user's edits, surface any contradictions, then re-run categorization
+        (the model re-decides everything not user-confirmed). Streamed as SSE."""
+        home = home_of(user)
+        corr = body.corrections
+
+        def gen():
+            q: queue.Queue = queue.Queue()
+
+            def worker():
+                try:
+                    conflicts = service.apply_and_check(home, corr)
+                    if conflicts:
+                        q.put({"stage": "conflict", "conflicts": conflicts})
+                    else:
+                        q.put({"stage": "done", "review": service.recategorize(home, on_event=q.put)})
+                except FileNotFoundError:
+                    q.put({"stage": "error", "detail": "Run Analyze first."})
+                except Exception as e:  # noqa: BLE001
+                    q.put({"stage": "error", "detail": str(e)})
+                finally:
+                    q.put(None)
+
+            threading.Thread(target=worker, daemon=True).start()
+            while True:
+                ev = q.get()
+                if ev is None:
+                    break
+                yield _sse(ev)
+
+        return StreamingResponse(gen(), media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
     # ---- finalize + report ----
     @app.post("/api/finalize")
     def finalize(user: str = Depends(current_user)):

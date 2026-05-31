@@ -87,6 +87,14 @@
   .hintbox { color:var(--muted); font-size:14px; text-align:center; padding:48px 20px; }
   .toolbar { display:flex; gap:8px; align-items:center; justify-content:space-between; margin:14px 0 6px; flex-wrap:wrap; }
   .warnbox { background:#fff7ed; border:1px solid #fed7aa; color:var(--warn); border-radius:8px; padding:8px 12px; font-size:13px; margin-bottom:10px; }
+  .conflictbox { background:#fef2f2; border:1px solid #fca5a5; color:var(--bad); border-radius:10px; padding:12px 14px; margin-bottom:12px; font-size:13.5px; }
+  .conflictbox h4 { margin:0 0 6px; font-size:14px; }
+  .conflictbox .cf { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:6px 0; border-top:1px solid #fecaca; }
+  .conflictbox .cf:first-of-type { border-top:none; }
+  .conflictbox .cf b { color:var(--ink); }
+  .conflictbox select { padding:5px 7px; border:1px solid var(--line); border-radius:6px; }
+  .suggestbox { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; border-radius:10px; padding:10px 14px; margin-bottom:12px; font-size:13.5px; }
+  .suggestbox b { display:block; margin-bottom:2px; }
 </style>
 </head>
 <body>
@@ -133,9 +141,10 @@
       <section id="sec-prefs" class="section active panel">
         <h2>Your categories</h2>
         <p class="lead">Define the categories that fit you. The description is sent to the model, so it
-           categorizes the way you think. Monthly limit of 0 means no limit.</p>
+           categorizes the way you think. Monthly limit of 0 means no limit. Tick <b>Hidden</b> to keep a
+           category out of the report (e.g. card payments / transfers between your own accounts).</p>
         <table>
-          <thead><tr><th style="width:24%">Category</th><th>Description</th><th style="width:120px">Monthly limit ($)</th><th style="width:34px"></th></tr></thead>
+          <thead><tr><th style="width:22%">Category</th><th>Description</th><th style="width:115px">Monthly limit ($)</th><th style="width:58px" title="Excluded from the report">Hidden</th><th style="width:34px"></th></tr></thead>
           <tbody id="catRows"></tbody>
         </table>
         <div class="toolbar">
@@ -170,18 +179,24 @@
       <!-- REVIEW -->
       <section id="sec-review" class="section panel">
         <h2>Review &amp; correct</h2>
-        <p class="lead">Fix any categories the model got wrong, then finalize to build the report.
-           Flagged rows are highlighted.</p>
+        <p class="lead"><strong>Save corrections</strong> teaches the model from your fixes and
+           re-runs categorization (Ollama re-decides everything you haven't confirmed). Then finalize.</p>
         <div id="reviewWarn"></div>
+        <div id="conflictBox" class="conflictbox hidden"></div>
+        <div id="suggestBox" class="suggestbox hidden"></div>
         <div class="toolbar">
           <div class="row">
             <label class="row" style="font-size:13px;color:var(--muted);gap:6px;"><input type="checkbox" id="onlyAttn"> only flagged</label>
             <span id="reviewCounts" class="pill"></span>
           </div>
           <div class="row">
-            <button id="saveCorr" class="btn secondary">Save corrections</button>
+            <button id="saveCorr" class="btn secondary">Save corrections &amp; re-run</button>
             <button id="finalize" class="btn">Finalize &amp; build report</button>
           </div>
+        </div>
+        <div class="progress" id="recatProgress">
+          <div class="stage" data-stage="recat"><span class="lbl">Re-categorize</span><div class="bar"><div class="fill"></div></div><span class="pct"></span></div>
+          <div class="msg" id="recatMsg"></div>
         </div>
         <div id="reviewBody"></div>
       </section>
@@ -265,19 +280,20 @@
     const tb = $("catRows"); tb.innerHTML = "";
     categoriesCache.forEach((c, i) => {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td><input value="${esc(c.name)}"></td>
-        <td><input value="${esc(c.description || "")}"></td>
+      tr.innerHTML = `<td><input class="cname" value="${esc(c.name)}"></td>
+        <td><input class="cdesc" value="${esc(c.description || "")}"></td>
         <td><input class="lim" type="number" min="0" step="25" value="${c.monthly_limit || 0}"></td>
+        <td style="text-align:center"><input class="chid" type="checkbox" ${c.hidden ? "checked" : ""}></td>
         <td><button class="del" title="remove" style="border:none;background:none;color:var(--bad);cursor:pointer">✕</button></td>`;
-      const [n, d2, l] = tr.querySelectorAll("input");
-      n.oninput = () => categoriesCache[i].name = n.value;
-      d2.oninput = () => categoriesCache[i].description = d2.value;
-      l.oninput = () => categoriesCache[i].monthly_limit = parseFloat(l.value || 0);
+      tr.querySelector(".cname").oninput = (e) => categoriesCache[i].name = e.target.value;
+      tr.querySelector(".cdesc").oninput = (e) => categoriesCache[i].description = e.target.value;
+      tr.querySelector(".lim").oninput = (e) => categoriesCache[i].monthly_limit = parseFloat(e.target.value || 0);
+      tr.querySelector(".chid").onchange = (e) => categoriesCache[i].hidden = e.target.checked;
       tr.querySelector(".del").onclick = () => { categoriesCache.splice(i, 1); renderCategories(); };
       tb.appendChild(tr);
     });
   }
-  $("addCat").onclick = () => { categoriesCache.push({ name: "", description: "", monthly_limit: 0 }); renderCategories(); };
+  $("addCat").onclick = () => { categoriesCache.push({ name: "", description: "", monthly_limit: 0, hidden: false }); renderCategories(); };
   $("saveCats").onclick = async () => {
     catMsg("Saving…");
     const r = await jpost("/api/categories", { categories: categoriesCache }, "PUT");
@@ -398,12 +414,86 @@
     });
     return corr;
   }
-  $("saveCorr").onclick = async () => {
-    const corr = collectCorrections();
-    if (!Object.keys(corr).length) { $("reviewCounts").textContent = "No changes to save."; return; }
-    const r = await jpost("/api/corrections", { corrections: corr });
-    if (r.ok) { reviewData = await r.json(); renderReview(); $("reviewCounts").textContent = "✓ Corrections saved · " + reviewData.n_attention + " still flagged"; }
-  };
+
+  // Stream a POST as SSE-style "data:" frames (fetch reader — supports a request body, no auto-reconnect).
+  async function streamPost(path, body, onEvent) {
+    const r = await fetch(api() + path, { method: "POST", credentials: "same-origin",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!r.ok && !r.body) throw new Error((await r.json().catch(() => ({}))).detail || "request failed");
+    const reader = r.body.getReader(), dec = new TextDecoder(); let buf = "";
+    for (;;) {
+      const { value, done } = await reader.read(); if (done) break;
+      buf += dec.decode(value, { stream: true }); let i;
+      while ((i = buf.indexOf("\n\n")) >= 0) {
+        const line = buf.slice(0, i).split("\n").find(l => l.startsWith("data:"));
+        buf = buf.slice(i + 2);
+        if (line) onEvent(JSON.parse(line.slice(5).trim()));
+      }
+    }
+  }
+
+  function recatProg(pct, label, done) {
+    $("recatProgress").classList.add("show");
+    const s = document.querySelector('.stage[data-stage="recat"]'); s.classList.add("show"); s.classList.toggle("done", !!done);
+    if (pct != null) s.querySelector(".fill").style.width = pct + "%";
+    s.querySelector(".pct").textContent = label || "";
+  }
+  function recatMsg(t) { $("recatMsg").textContent = t || ""; }
+
+  function showSuggestion(text) {
+    const b = $("suggestBox");
+    if (!text) { b.classList.add("hidden"); b.innerHTML = ""; return; }
+    b.classList.remove("hidden");
+    b.innerHTML = `<b>💡 Make categories clearer</b>${esc(text)} <a href="#" id="goPrefs">Edit preferences →</a>`;
+    $("goPrefs").onclick = (e) => { e.preventDefault(); setSection("prefs"); };
+  }
+
+  // Contradiction prompt: same merchant labelled with 2+ categories — ask the user to pick one.
+  function showConflicts(conflicts) {
+    const box = $("conflictBox");
+    box.classList.remove("hidden");
+    let html = `<h4>⚠️ Please clarify — you labelled the same merchant differently:</h4>`;
+    conflicts.forEach((c, i) => {
+      html += `<div class="cf"><b>${esc(c.merchant)}</b><span style="color:var(--muted)">${esc(c.example)}</span>
+        <select data-merchant="${esc(c.merchant)}" id="cf${i}">${c.categories.map(x => `<option>${esc(x)}</option>`).join("")}</select></div>`;
+    });
+    html += `<div style="margin-top:10px"><button id="resolveConflicts" class="btn">Use these &amp; re-run</button></div>`;
+    box.innerHTML = html;
+    $("resolveConflicts").onclick = () => {
+      // map every row of each conflicting merchant to the chosen category
+      const choice = {}; conflicts.forEach((c, i) => choice[c.merchant] = $("cf" + i).value);
+      const corr = {};
+      reviewData.rows.forEach(r => { if (choice[r.merchant_key]) corr[r.row_id] = choice[r.merchant_key]; });
+      box.classList.add("hidden"); runRecategorize(corr);
+    };
+  }
+
+  let recatBusy = false;
+  async function runRecategorize(corr) {
+    if (recatBusy) return; recatBusy = true;
+    $("saveCorr").disabled = true; $("conflictBox").classList.add("hidden"); $("suggestBox").classList.add("hidden");
+    recatProg(0, ""); recatMsg("Applying your corrections…");
+    try {
+      await streamPost("/api/recategorize", { corrections: corr }, (ev) => {
+        switch (ev.stage) {
+          case "categorize":
+            if (ev.i == null) recatMsg("Re-categorizing with Ollama (your fixes are now ground truth)…");
+            else { recatProg(ev.i / ev.n * 100, `${ev.i}/${ev.n}`); recatMsg(`Categorizing: ${ev.merchant}`); }
+            break;
+          case "conflict": recatMsg(""); $("recatProgress").classList.remove("show"); showConflicts(ev.conflicts); break;
+          case "done":
+            recatProg(100, "", true); reviewData = ev.review; renderReview();
+            recatMsg("✓ Re-categorized."); showSuggestion(ev.review.suggestion);
+            break;
+          case "error": recatMsg("Failed: " + (ev.detail || "error")); break;
+        }
+      });
+    } catch (e) { recatMsg("Failed: " + e.message); }
+    finally { recatBusy = false; $("saveCorr").disabled = false; }
+  }
+
+  $("saveCorr").onclick = () => runRecategorize(collectCorrections());
+
   $("finalize").onclick = async () => {
     const corr = collectCorrections();
     $("finalize").disabled = true; $("reviewCounts").textContent = "Saving corrections & building report…";
