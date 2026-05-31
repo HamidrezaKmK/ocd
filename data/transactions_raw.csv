@@ -1,0 +1,172 @@
+date,description,amount,polarity,balance,bank,statement_date,statement_month,source_file,category
+2024-01-02,DAILY PANTRY SINGAPORE SG,70.08,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-02,FRESH FIELDS GROCER SINGAPORE SG,84.08,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-02,PARK & GO SINGAPORE SG,11.56,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-02,CITY METRO CARD SINGAPORE SG,31.66,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-03,ARCTIC MARKET SINGAPORE SG,43.25,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-03,SHELL STATION SINGAPORE SG,21.34,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-04,SUNNY CAFE SINGAPORE SG,25.72,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-04,SKYWAY AIR SINGAPORE SG,175.72,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-06,SUNNY CAFE SINGAPORE SG,10.77,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-07,PARK & GO SINGAPORE SG,18.99,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-08,ARCTIC MARKET SINGAPORE SG,19.84,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-08,MORNING BITES CAFE SINGAPORE SG,6.25,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-08,HARVEST FOODS SINGAPORE SG,73.0,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-09,GREEN BASKET MART SINGAPORE SG,56.38,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-10,SUNNY CAFE SINGAPORE SG,19.81,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-10,GAME REALM SINGAPORE SG,12.94,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-10,COZY STAY HOTEL SINGAPORE SG,198.68,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-12,GLOBAL GRUB SINGAPORE SG,8.1,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-14,BOOK NOOK SINGAPORE SG,117.22,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-15,PARK & GO SINGAPORE SG,23.58,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-15,SPEEDY DRIVE SHOP SINGAPORE SG,66.24,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-15,GAME REALM SINGAPORE SG,19.87,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-17,VITAL DRUGS SINGAPORE SG,67.27,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-18,SUNNY CAFE SINGAPORE SG,11.18,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-18,URBAN EATS SINGAPORE SG,7.54,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-19,MORNING BITES CAFE SINGAPORE SG,25.86,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-19,URBAN EATS SINGAPORE SG,15.78,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-19,TUNE STREAM SINGAPORE SG,25.84,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-19,TELCO MOBILE SINGAPORE SG,51.89,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-20,SUNNY CAFE SINGAPORE SG,5.21,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-20,BOOK NOOK SINGAPORE SG,92.62,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-23,CINEMA PLUS SINGAPORE SG,23.09,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-26,NOODLE HOUSE SINGAPORE SG,36.42,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-27,DRIVE-THRU DELIGHTS SINGAPORE SG,42.13,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-27,SKYWAY AIR SINGAPORE SG,178.12,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-28,MORNING BITES CAFE SINGAPORE SG,22.83,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-29,NET CONNECT SINGAPORE SG,55.43,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-29,GREEN BASKET MART SINGAPORE SG,49.86,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-30,ARCTIC MARKET SINGAPORE SG,48.28,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-01-30,AQUA UTILITIES SINGAPORE SG,81.16,,0.0,generic,2024-01-31,2024-01,synthetic_metrobank_2024-01.pdf,Uncategorized
+2024-01-31,URBAN EATS SINGAPORE SG,12.68,,0.0,generic,2024-01-31,2024-01,synthetic_cardco_2024-01.pdf,Uncategorized
+2024-02-01,GOLDEN TOAST SINGAPORE SG,40.71,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-01,CITY METRO CARD SINGAPORE SG,15.66,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-02,URBAN EATS SINGAPORE SG,32.71,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-02,RIDEFLOW SINGAPORE SG,9.83,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-03,DAILY PANTRY SINGAPORE SG,74.49,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-03,HOME STYLE SINGAPORE SG,41.34,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-03,SPEEDY DRIVE SHOP SINGAPORE SG,60.32,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-03,AQUA UTILITIES SINGAPORE SG,58.15,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-05,CITY METRO CARD SINGAPORE SG,28.71,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-05,CINEMA PLUS SINGAPORE SG,10.26,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-06,GOLDEN TOAST SINGAPORE SG,28.11,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-06,RENT-A-RIDE SINGAPORE SG,179.96,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-07,ARCTIC MARKET SINGAPORE SG,68.8,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-08,BRIGHT ENERGY SINGAPORE SG,85.25,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-08,DAILY PANTRY SINGAPORE SG,74.91,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-09,BOOK NOOK SINGAPORE SG,113.55,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-09,SKYWAY AIR SINGAPORE SG,127.3,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-09,FRESH FIELDS GROCER SINGAPORE SG,85.68,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-10,NOODLE HOUSE SINGAPORE SG,32.15,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-11,GREEN BASKET MART SINGAPORE SG,64.13,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-11,DRIVE-THRU DELIGHTS SINGAPORE SG,23.05,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-11,GOLDEN TOAST SINGAPORE SG,9.17,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-11,RIDEFLOW SINGAPORE SG,22.85,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-13,RIDEFLOW SINGAPORE SG,35.18,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-13,ARCTIC MARKET SINGAPORE SG,85.85,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-13,GAME REALM SINGAPORE SG,12.8,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-15,RIDEFLOW SINGAPORE SG,30.3,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-16,HARVEST FOODS SINGAPORE SG,55.86,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-16,FAST FEAST SINGAPORE SG,31.4,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-16,SKYWAY AIR SINGAPORE SG,263.66,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-17,CITY METRO CARD SINGAPORE SG,40.63,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-18,HOME STYLE SINGAPORE SG,56.25,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-19,EVENT TIX SINGAPORE SG,20.45,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-21,FAST FEAST SINGAPORE SG,26.85,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-21,CORNER GROCERY SINGAPORE SG,68.07,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-22,GAME REALM SINGAPORE SG,26.33,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-22,SUNNY CAFE SINGAPORE SG,40.4,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-23,SUNNY CAFE SINGAPORE SG,23.49,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-25,GADGET WORLD SINGAPORE SG,40.24,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-26,HARVEST FOODS SINGAPORE SG,77.03,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-26,URBAN TRANSIT CO. SINGAPORE SG,11.27,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-27,TRENDWEAR SINGAPORE SG,76.66,,0.0,generic,2024-02-29,2024-02,synthetic_cardco_2024-02.pdf,Uncategorized
+2024-02-28,HOME STYLE SINGAPORE SG,155.72,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-29,ARCTIC MARKET SINGAPORE SG,77.3,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-02-29,SPEEDY DRIVE SHOP SINGAPORE SG,136.16,,0.0,generic,2024-02-29,2024-02,synthetic_metrobank_2024-02.pdf,Uncategorized
+2024-03-01,BOOK NOOK SINGAPORE SG,48.73,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-02,SUNNY CAFE SINGAPORE SG,28.68,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-03,FRESH FIELDS GROCER SINGAPORE SG,88.85,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-03,CITY METRO CARD SINGAPORE SG,7.48,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-04,MORNING BITES CAFE SINGAPORE SG,5.01,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-04,TUNE STREAM SINGAPORE SG,25.11,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-06,NOODLE HOUSE SINGAPORE SG,9.4,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-09,SUNNY CAFE SINGAPORE SG,7.72,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-09,SPEEDY FUEL SINGAPORE SG,16.7,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-09,URBAN TRANSIT CO. SINGAPORE SG,3.74,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-10,EVENT TIX SINGAPORE SG,29.55,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-11,SHELL STATION SINGAPORE SG,30.13,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-11,RENT-A-RIDE SINGAPORE SG,225.47,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-11,ARCTIC MARKET SINGAPORE SG,98.53,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-12,BOOK NOOK SINGAPORE SG,40.52,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-13,DAILY PANTRY SINGAPORE SG,44.56,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-15,RIDEFLOW SINGAPORE SG,20.26,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-15,FAST FEAST SINGAPORE SG,27.5,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-16,GOLDEN TOAST SINGAPORE SG,9.91,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-17,FAST FEAST SINGAPORE SG,38.92,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-17,CINEMA PLUS SINGAPORE SG,20.87,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-18,SUNNY CAFE SINGAPORE SG,9.06,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-18,BRIGHT ENERGY SINGAPORE SG,78.74,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-20,GOLDEN TOAST SINGAPORE SG,6.02,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-20,GLOBAL GRUB SINGAPORE SG,20.05,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-21,DAILY PANTRY SINGAPORE SG,45.03,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-22,NET CONNECT SINGAPORE SG,82.01,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-23,WELLNESS PHARMACY SINGAPORE SG,61.04,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-24,SPEEDY DRIVE SHOP SINGAPORE SG,99.87,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-26,CORNER GROCERY SINGAPORE SG,56.95,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-27,RIDEFLOW SINGAPORE SG,28.3,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-28,GREEN BASKET MART SINGAPORE SG,26.54,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-30,BOOK NOOK SINGAPORE SG,23.79,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-30,CARE CLINIC SINGAPORE SG,21.69,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-30,DAILY PANTRY SINGAPORE SG,92.02,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-30,GLOBAL GRUB SINGAPORE SG,19.23,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-03-31,FAST FEAST SINGAPORE SG,18.9,,0.0,generic,2024-03-31,2024-03,synthetic_cardco_2024-03.pdf,Uncategorized
+2024-03-31,GLOBAL GRUB SINGAPORE SG,10.32,,0.0,generic,2024-03-31,2024-03,synthetic_metrobank_2024-03.pdf,Uncategorized
+2024-04-01,CORNER GROCERY SINGAPORE SG,93.24,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-01,TELCO MOBILE SINGAPORE SG,106.53,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-01,NOODLE HOUSE SINGAPORE SG,17.78,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-02,GREEN BASKET MART SINGAPORE SG,89.05,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-02,BRIGHT ENERGY SINGAPORE SG,119.35,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-03,CITY METRO CARD SINGAPORE SG,33.89,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-03,MEGA MART ONLINE SINGAPORE SG,126.94,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-03,ARCTIC MARKET SINGAPORE SG,70.89,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-03,DRIVE-THRU DELIGHTS SINGAPORE SG,27.46,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-03,URBAN TRANSIT CO. SINGAPORE SG,13.78,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-04,SHELL STATION SINGAPORE SG,38.22,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-05,TRENDWEAR SINGAPORE SG,24.93,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-05,URBAN TRANSIT CO. SINGAPORE SG,19.67,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-05,VITAL DRUGS SINGAPORE SG,32.61,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-06,NOODLE HOUSE SINGAPORE SG,12.94,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-06,GOLDEN TOAST SINGAPORE SG,5.77,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-07,GOLDEN TOAST SINGAPORE SG,25.4,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-08,URBAN EATS SINGAPORE SG,24.87,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-08,GLOBAL GRUB SINGAPORE SG,28.84,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-12,GOLDEN TOAST SINGAPORE SG,8.59,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-13,SHELL STATION SINGAPORE SG,20.48,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-13,URBAN TRANSIT CO. SINGAPORE SG,3.27,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-13,EVENT TIX SINGAPORE SG,28.68,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-14,SPEEDY FUEL SINGAPORE SG,33.43,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-14,GREEN BASKET MART SINGAPORE SG,31.19,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-16,GREEN BASKET MART SINGAPORE SG,35.99,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-16,MORNING BITES CAFE SINGAPORE SG,43.23,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-17,BOOK NOOK SINGAPORE SG,159.68,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-18,BRIGHT ENERGY SINGAPORE SG,82.92,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-18,GOLDEN TOAST SINGAPORE SG,20.54,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-20,CORNER GROCERY SINGAPORE SG,90.64,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-20,FITZONE GYM SINGAPORE SG,62.63,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-21,RENT-A-RIDE SINGAPORE SG,90.62,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-21,CORNER GROCERY SINGAPORE SG,29.17,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-21,CITY METRO CARD SINGAPORE SG,12.42,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-22,VITAL DRUGS SINGAPORE SG,69.36,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-22,ARCTIC MARKET SINGAPORE SG,89.42,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-22,HARVEST FOODS SINGAPORE SG,100.55,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-22,TRENDWEAR SINGAPORE SG,166.02,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-23,GLOBAL GRUB SINGAPORE SG,19.15,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-24,COZY STAY HOTEL SINGAPORE SG,277.4,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-25,SHELL STATION SINGAPORE SG,10.0,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-26,DAILY PANTRY SINGAPORE SG,89.11,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-26,GOLDEN TOAST SINGAPORE SG,32.11,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-29,EVENT TIX SINGAPORE SG,19.62,,0.0,generic,2024-04-30,2024-04,synthetic_cardco_2024-04.pdf,Uncategorized
+2024-04-29,MORNING BITES CAFE SINGAPORE SG,19.9,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized
+2024-04-29,RENT-A-RIDE SINGAPORE SG,221.41,,0.0,generic,2024-04-30,2024-04,synthetic_metrobank_2024-04.pdf,Uncategorized

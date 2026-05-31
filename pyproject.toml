@@ -4,5 +4,29 @@ version = "0.1.0"
 description = "Optimized Cash Dashboard: A vibe coded financial manager"
 requires-python = "==3.11.*"
 dependencies = [
-    "wandb",
+    "monopoly-core",
+    "openai>=1.0",
+    "ollama",
+    "pydantic>=2",
+    "pandas",
+    "plotly",
+    "jinja2",
+    "pyyaml",
+    "streamlit",
+    "typer",
+    "reportlab",
+    "requests",
 ]
+
+[project.optional-dependencies]
+tracking = ["wandb"]
+
+[project.scripts]
+ocd = "ocd.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ocd"]

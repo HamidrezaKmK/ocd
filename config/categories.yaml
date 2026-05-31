@@ -1,0 +1,25 @@
+categories:
+- name: Groceries
+  description: Supermarkets, grocery stores, food markets
+  monthly_limit: 600.0
+- name: Dining
+  description: Restaurants, cafes, bars, food delivery, coffee shops
+  monthly_limit: 300.0
+- name: Transport
+  description: Gas, fuel, rideshare, transit, parking, tolls
+  monthly_limit: 200.0
+- name: Shopping
+  description: Retail, clothing, electronics, online marketplaces
+  monthly_limit: 300.0
+- name: Utilities & Bills
+  description: Phone, internet, electricity, water, insurance
+  monthly_limit: 400.0
+- name: Entertainment
+  description: Streaming, movies, games, events, subscriptions
+  monthly_limit: 150.0
+- name: Health
+  description: Pharmacy, doctors, gym, fitness, wellness
+  monthly_limit: 200.0
+- name: Travel
+  description: Flights, hotels, car rental, vacation spending
+  monthly_limit: 300.0

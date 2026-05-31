@@ -1,0 +1,22 @@
+# OCD model configuration. Every role speaks the OpenAI-compatible API, so you can
+# point any of them at Ollama (default), a local vLLM server, or a remote endpoint by
+# changing base_url + model only.
+#
+# To use the H100s with vLLM instead of Ollama, e.g.:
+#   classifier: { provider: vllm, base_url: http://localhost:8000/v1,
+#                 model: Qwen/Qwen2.5-14B-Instruct, temperature: 0, api_key: EMPTY }
+classifier:
+  provider: ollama
+  base_url: http://localhost:11434/v1
+  model: qwen2.5:7b-instruct
+  temperature: 0
+insights:
+  use: classifier
+  enabled: true
+embeddings:
+  provider: ollama
+  base_url: http://localhost:11434/v1
+  model: nomic-embed-text
+  enabled: false
+ocr:
+  enabled: false
