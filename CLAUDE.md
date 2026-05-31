@@ -30,12 +30,12 @@ conflict detection and (b) folds confirmed merchant→category mappings into
 |---|---|
 | `paths.py` | Single source of truth for all filesystem paths. Root override via `OCD_HOME`. |
 | `config.py` | Pydantic models + YAML I/O for categories, merchant memory, and run metadata (the gate). |
-| `models.py` | Role-based model selection (`classifier`/`extractor`/`insights`/`embeddings`/`ocr`). One OpenAI-compatible client. |
+| `models.py` | Role-based model selection (`classifier`/`extractor`/`insights`/`chat`/`embeddings`/`ocr`). One OpenAI-compatible client. |
 | `extract.py` | Step 1. Deterministic monopoly parsing first; LLM fallback (`extractor` role) reads the PDF text when monopoly raises or finds nothing. Purchase filtering. |
 | `classify.py` | Step 2 auto pass. Per-unique-merchant LLM classification → `{category, confidence, rationale}`. `classify_transactions` takes `pinned` (user-confirmed, held fixed) + `examples` (few-shot in the prompt); `use_memory=False` sends every non-pinned merchant to the model instead of the exact-match lookup. |
 | `review.py` | Step 2 interactive. Attention flags, corrections, finalization. |
 | `report.py` | Step 3. Aggregation, Plotly figures (incl. `fig_budget_ratio` = trailing-30-day spend ÷ monthly limit), rule-based insights (+ optional LLM summary), HTML/MD render. |
-| `service.py` | **Shared service layer** — the single source of truth both the web app and CLI call. Per-user ops (categories, statements, analyze, review, corrections, finalize+report) each run under `paths.use_root(user_home)`. `recategorize` pins user fixes, persists them to memory, re-runs the model (`use_memory=False`); `detect_conflicts` flags a merchant labelled two ways; `_clarification_suggestion` asks the model how to clarify ambiguous categories. |
+| `service.py` | **Shared service layer** — the single source of truth both the web app and CLI call. Per-user ops (categories, statements, analyze, review, corrections, finalize+report) each run under `paths.use_root(user_home)`. `recategorize` pins user fixes, persists them to memory, re-runs the model (`use_memory=False`); `detect_conflicts` flags a merchant labelled two ways; `_clarification_suggestion` asks the model how to clarify ambiguous categories. `chat` is the in-app help bot — a `_in_scope` gate (tiny few-shot yes/no call) returns a canned refusal for off-topic questions so they're never answered. |
 | `server.py` | FastAPI backend + auth for `ocd serve`. Thin HTTP glue over `service`. `/api/analyze/stream` streams per-stage progress (SSE, worker-thread + queue). |
 | `auth.py` | Accounts (PBKDF2 password hashing → `data/users/accounts.yaml`) + in-memory sessions. Stdlib only. |
 | `web/index.html` | Single-page frontend: login gate + 4 sections (Preferences, Statements, Review&correct, Report). The only UI. |

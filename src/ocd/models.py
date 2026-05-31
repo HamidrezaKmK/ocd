@@ -9,6 +9,7 @@ Roles:
   classifier  (required)  - assigns each transaction to a category
   extractor   (optional)  - Step 1 LLM fallback that reads a PDF when deterministic parsing fails
                             (defaults to reuse classifier)
+  chat        (optional)  - in-app help chatbot (defaults to reuse classifier)
   insights    (optional)  - writes the one-paragraph report summary (defaults to reuse classifier)
   embeddings  (optional)  - merchant-similarity / no-LLM fast path (off by default)
   ocr         (optional)  - Step 1 scanned-PDF OCR toggle (off by default; handled in extract.py)
@@ -35,6 +36,8 @@ DEFAULT_MODELS_CONFIG: dict[str, Any] = {
     },
     # Reuse the classifier model for the PDF-reading fallback by default.
     "extractor": {"use": "classifier", "enabled": True},
+    # Reuse the classifier model for the in-app help chatbot by default.
+    "chat": {"use": "classifier", "enabled": True},
     # Reuse the classifier model for the report summary by default.
     "insights": {"use": "classifier", "enabled": True},
     "embeddings": {"provider": "ollama", "base_url": DEFAULT_BASE_URL,

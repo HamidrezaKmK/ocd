@@ -85,6 +85,9 @@ ocd serve         # starts a local server, then open http://localhost:8000
 Everything runs on this machine (monopoly extract + local Ollama categorize + report); nothing leaves
 your computer. A demo account ships ready to try: **`synthetic` / `synthetic`**.
 
+A **help chatbot** (💬, bottom-right) answers questions about using OCD, powered by your local model.
+It's strictly scoped — a topic gate declines anything off-topic so it only helps with the app.
+
 Both the web app and the CLI go through one shared service layer (`ocd.service`) running each user's
 pipeline in their own workspace (`data/users/<user>/`) — there is no separate UI logic. The backend
 URL is configurable (page settings or `?api=`), so the same frontend can later point at a remote server.

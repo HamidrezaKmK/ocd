@@ -66,6 +66,9 @@ def build_app():
     class CorrectionsIn(BaseModel):
         corrections: dict[str, str]
 
+    class ChatIn(BaseModel):
+        messages: list[dict]
+
     def current_user(ocd_session: Optional[str] = Cookie(default=None)) -> str:
         user = auth.session_user(ocd_session)
         if not user:
@@ -237,6 +240,18 @@ def build_app():
         job_id = uuid.uuid4().hex[:12]
         _REPORTS[job_id] = html
         return {"report_url": f"/report/{job_id}"}
+
+    @app.post("/api/chat")
+    def chat(body: ChatIn, user: str = Depends(current_user)):
+        """In-app help chatbot — strictly scoped to using OCD (see service.CHAT_SYSTEM_PROMPT)."""
+        try:
+            return {"reply": service.chat(body.messages)}
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        except Exception as e:  # noqa: BLE001
+            logger.warning("Chat failed: %s", e)
+            raise HTTPException(status_code=503,
+                                detail="The local model is unavailable. Is Ollama running?")
 
     @app.get("/report/{job_id}")
     def report(job_id: str):
