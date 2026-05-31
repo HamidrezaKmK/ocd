@@ -123,7 +123,7 @@ generate synthetic statements → `ocd extract` → `ocd categorize --finalize` 
   **real** merchant/transaction data. Before committing, double-check you are not adding real
   financial data; the `.gitignore` needs fixing to actually exclude `data/statements/`,
   `data/transactions_*.csv`, and learned `config/merchant_memory.yaml`. (A stale, wrong-path
-  `statements/hamid/` entry exists in `.gitignore` from an earlier layout — the real path is
+  `statements/username/` entry exists in `.gitignore` from an earlier layout — the real path is
   `data/statements/`.)
 - **Python is pinned to 3.11** (`requires-python = "==3.11.*"`); poppler/monopoly compatibility.
 - **Local model server must be up** for Step 2 (and Step 3's optional summary): `ollama serve` +

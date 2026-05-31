@@ -1,6 +1,6 @@
 """OCD — Optimized Cash Dashboard.
 
-A fully-local, personalized credit-card statement analyzer:
+A personalized credit-card statement analyzer with agents:
 
   Step 1  extract    PDFs -> data/transactions_raw.csv          (ocd.extract)
   Step 2  categorize raw  -> data/transactions_categorized.csv  (ocd.classify + ocd.review)
