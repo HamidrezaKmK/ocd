@@ -1,0 +1,8 @@
+[project]
+name = "ocd"
+version = "0.1.0"
+description = "Optimized Cash Dashboard: A vibe coded financial manager"
+requires-python = "==3.11.*"
+dependencies = [
+    "wandb",
+]
