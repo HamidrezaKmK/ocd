@@ -9,11 +9,14 @@ open-source models. No data leaves the device.
 ## How it works — three steps
 
 ```
- Step 1  extract     PDFs (data/statements/) ─► data/transactions_raw.csv     [deterministic, monopoly]
+ Step 1  extract     PDFs (data/statements/) ─► data/transactions_raw.csv     [deterministic monopoly; LLM fallback]
  Step 2  categorize  raw ─► local LLM ─► review/correct ─► finalize           [Ollama + you]
  Step 3  report      finalized data ─► interactive HTML + Markdown report      [Plotly]
 ```
 
+- **Robust extraction:** Step 1 parses each PDF deterministically with `monopoly` first; if that
+  fails or finds nothing (an unrecognized layout), it falls back to reading the PDF text with the
+  local LLM and emitting the same transaction CSV. Disable with `ocd extract --no-llm-fallback`.
 - **Personalized:** you define the categories, their descriptions, and monthly limits. The
   descriptions are given to the model, so it categorizes the way *you* think — not by generic rules.
 - **Human-in-the-loop:** after the automatic pass, OCD flags rows that need attention — low
@@ -21,6 +24,9 @@ open-source models. No data leaves the device.
   categorized differently last time), and brand-new merchants. Your corrections are remembered, so
   future runs get more accurate and more deterministic.
 - **Gated:** the report (Step 3) only runs once you've *finalized* the categorization (Step 2).
+- **Normalized budget view:** alongside the dollar charts, the report plots each category's trailing
+  30-day spend as a **ratio of its monthly limit** (1.0 = at budget), so over-spending stands out on a
+  single shared scale regardless of category size.
 - **Swappable models:** every model is chosen per role in `config/models.yaml`. Default is Ollama
   (`qwen2.5:7b-instruct`); point it at a bigger model or a local vLLM server with a one-line edit.
 
@@ -54,21 +60,65 @@ ocd doctor
 
 ## Usage
 
-### Web UI (recommended)
+### Web app — upload & report (recommended)
 
 ```bash
-ocd app          # opens a local Streamlit app: Setup ─► Extract ─► Categorize & review ─► Report
+ocd serve         # starts a local server, then open http://localhost:8000
 ```
 
-### Command line
+**Multi-user.** Sign up with a username + password and log in; each account gets its own workspace at
+`data/users/<user>/`. The single-page app walks the full pipeline as four steps:
+
+1. **⚙️ Preferences** — add/edit/remove categories (name, description, monthly limit). The description
+   is sent to the model, so it categorizes the way *you* think.
+2. **📄 Statements** — drag in PDFs (they persist in your folder), then **Analyze** with **live
+   per-stage progress**: upload %, extract (per file), categorize (per merchant) — streamed over SSE.
+3. **📝 Review & correct** — fix any categories the model got wrong (flagged rows highlighted), then
+   finalize.
+4. **📊 Report** — the interactive dashboard, built on finalize.
+
+Everything runs on this machine (monopoly extract + local Ollama categorize + report); nothing leaves
+your computer. A demo account ships ready to try: **`synthetic` / `synthetic`**.
+
+Both the web app and the CLI go through one shared service layer (`ocd.service`) running each user's
+pipeline in their own workspace (`data/users/<user>/`) — there is no separate UI logic. The backend
+URL is configurable (page settings or `?api=`), so the same frontend can later point at a remote server.
+
+> Auth is lightweight (PBKDF2-hashed passwords in a git-ignored `data/users/accounts.yaml`, in-memory
+> sessions) — good for a trusted local/LAN setup. Put it behind HTTPS before exposing it publicly.
+
+### Public demo via GitHub Pages + ngrok
+
+The frontend is hosted at **[hamidrezakmk.github.io/ocd](https://hamidrezakmk.github.io/ocd/)**.
+All processing still runs on your machine; the tunnel just makes it reachable publicly.
+
+```bash
+# Terminal 1 — model server
+ollama serve
+
+# Terminal 2 — app backend (cross-origin mode)
+OCD_CORS_ORIGINS=https://hamidrezakmk.github.io ocd serve
+
+# Terminal 3 — public tunnel
+ngrok http --url=https://cufflink-wisdom-gnat.ngrok-free.dev 8000
+```
+
+Share **`https://hamidrezakmk.github.io/ocd/`** — stop the tunnel to take it offline.
+
+To restart after a shutdown, just re-run the three commands above in order.
+
+### Command line (single-user)
 
 ```bash
 ocd setup                       # define your categories (name / description / monthly limit)
 # put statement PDFs in data/statements/
 ocd extract                     # Step 1
 ocd categorize                  # Step 2 auto pass (prints rows needing attention)
-ocd review --finalize           # Step 2 finalize (or review/correct in `ocd app`)
+ocd review --finalize           # Step 2 finalize (or review/correct in `ocd serve`)
 ocd report                      # Step 3 ─► reports/report_<period>.html + .md
+
+ocd pipeline                    # run all three steps end-to-end (used by `ocd serve`)
+ocd serve                       # local web server (upload PDFs in the browser)
 ```
 
 ## Try it without real statements
@@ -113,7 +163,10 @@ src/ocd/
   classify.py   Step 2 auto pass — LLM categorization (structured JSON)
   review.py     Step 2 interactive — flagging, reconciliation, finalization gate
   report.py     Step 3 — Plotly figures, insights, Markdown + standalone HTML
-  app.py        Streamlit UI
+  service.py    shared per-user service layer (the single source of truth both UIs call)
+  server.py     FastAPI backend + auth for the multi-user web app
+  auth.py       accounts (hashed passwords) + sessions
+  web/          single-page frontend served by `ocd serve`
   cli.py        `ocd` command
   samples/      download real samples + synthetic statement generator
 ```
