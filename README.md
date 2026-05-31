@@ -85,8 +85,10 @@ ocd serve         # starts a local server, then open http://localhost:8000
 Everything runs on this machine (monopoly extract + local Ollama categorize + report); nothing leaves
 your computer. A demo account ships ready to try: **`synthetic` / `synthetic`**.
 
-A **help chatbot** (💬, bottom-right) answers questions about using OCD, powered by your local model.
-It's strictly scoped — a topic gate declines anything off-topic so it only helps with the app.
+A **help chatbot** (💬, bottom-right), powered by your local model, answers questions about using OCD
+**and acts as a budgeting coach** — it's given a summary of your own analyzed spending and gives
+advice grounded in your real numbers ("where am I overspending?", "how can I save?"). A topic gate
+keeps it on-topic: it declines unrelated questions and won't give specific stock/tax/legal/medical advice.
 
 Both the web app and the CLI go through one shared service layer (`ocd.service`) running each user's
 pipeline in their own workspace (`data/users/<user>/`) — there is no separate UI logic. The backend

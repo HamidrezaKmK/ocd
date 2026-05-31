@@ -561,7 +561,7 @@
     $("chatFab").classList.toggle("hidden", open);
     if (open) {
       if (!chatHistory.length) {
-        chatHistory.push({ role: "assistant", content: "Hi! I'm the OCD Assistant. Ask me how to use the app — setting up categories, uploading statements, reviewing & correcting, or reading your report." });
+        chatHistory.push({ role: "assistant", content: "Hi! I'm the OCD Assistant. Ask me how to use the app, or for budgeting advice based on your own spending — e.g. “where am I overspending?” or “how can I save money?” (analyze some statements first)." });
         chatRender();
       }
       $("chatText").focus();

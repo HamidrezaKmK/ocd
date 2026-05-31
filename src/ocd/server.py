@@ -245,7 +245,7 @@ def build_app():
     def chat(body: ChatIn, user: str = Depends(current_user)):
         """In-app help chatbot — strictly scoped to using OCD (see service.CHAT_SYSTEM_PROMPT)."""
         try:
-            return {"reply": service.chat(body.messages)}
+            return {"reply": service.chat(body.messages, home=home_of(user))}
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         except Exception as e:  # noqa: BLE001
