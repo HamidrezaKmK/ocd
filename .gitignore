@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Raw bank statements with real PII — never commit these
+statements/hamid/
+statements/**/raw/

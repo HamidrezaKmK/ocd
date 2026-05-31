@@ -4,5 +4,9 @@ version = "0.1.0"
 description = "Optimized Cash Dashboard: A vibe coded financial manager"
 requires-python = "==3.11.*"
 dependencies = [
+    "faker>=40.19.1",
+    "jinja2>=3.1.6",
+    "pymupdf>=1.27.2.3",
     "wandb",
+    "weasyprint>=68.1",
 ]
