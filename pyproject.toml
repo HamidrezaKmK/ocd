@@ -12,10 +12,12 @@ dependencies = [
     "plotly",
     "jinja2",
     "pyyaml",
-    "streamlit",
     "typer",
     "reportlab",
     "requests",
+    "fastapi",
+    "uvicorn",
+    "python-multipart",
 ]
 
 [project.optional-dependencies]

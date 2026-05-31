@@ -6,7 +6,8 @@
     ocd categorize             # Step 2 (auto pass): draft categorization + attention list
     ocd review                 # Step 2 (interactive): inspect flags / finalize from terminal
     ocd report                 # Step 3: build Markdown + HTML report (needs finalized run)
-    ocd app                    # launch the Streamlit UI (setup -> review -> report)
+    ocd pipeline               # run all steps end-to-end
+    ocd serve                  # launch the multi-user web UI (preferences -> review -> report)
 """
 
 from __future__ import annotations
@@ -87,17 +88,22 @@ def setup(reset: bool = typer.Option(False, help="Overwrite existing categories.
 def extract(
     statements_dir: Optional[Path] = typer.Option(None, help="Folder of statement PDFs."),
     ocr: bool = typer.Option(False, help="Apply OCR (for scanned/image PDFs)."),
+    llm_fallback: bool = typer.Option(
+        True, "--llm-fallback/--no-llm-fallback",
+        help="If deterministic parsing fails, read the PDF with the local LLM."),
 ):
     """Step 1 — parse statement PDFs into data/transactions_raw.csv."""
     from . import paths
     from .extract import extract_statements
     sd = statements_dir or paths.STATEMENTS_DIR
     typer.echo(f"Extracting PDFs from {sd} ...")
-    res = extract_statements(statements_dir=sd, use_ocr=ocr or None)
+    res = extract_statements(statements_dir=sd, use_ocr=ocr or None,
+                             allow_llm_fallback=llm_fallback)
     for r in res.per_file:
         mark = "✓" if r["status"] == "ok" else "✗"
         color = "green" if r["status"] == "ok" else "red"
-        typer.secho(f"  {mark} {r['file']} -> {r['bank']} ({r['n']} purchases)"
+        via = f" via {r['method']}" if r.get("method") else ""
+        typer.secho(f"  {mark} {r['file']}{via} -> {r['bank']} ({r['n']} purchases)"
                     + (f" — {r['error']}" if r["error"] else ""), fg=color)
     typer.secho(f"{len(res.transactions)} purchases from {res.n_files_ok} statement(s); "
                 f"banks: {', '.join(res.banks) or 'none'}", fg="cyan")
@@ -129,13 +135,13 @@ def categorize(
         typer.echo(f"  • {it.date}  ${it.amount:>8.2f}  {it.description[:34]:34s} "
                    f"-> {it.category:14s} [{'; '.join(it.reasons)}]")
     if rs.n_attention > 15:
-        typer.echo(f"  ... and {rs.n_attention - 15} more (use `ocd app` to review all).")
+        typer.echo(f"  ... and {rs.n_attention - 15} more (use `ocd serve` to review all).")
 
     if finalize:
         meta = do_finalize(df)
         typer.secho(f"Finalized {meta.n_transactions} transactions (period {meta.period}).", fg="green")
     else:
-        typer.echo("\nReview & finalize with `ocd app`, or `ocd categorize --finalize` to accept as-is.")
+        typer.echo("\nReview & finalize with `ocd serve`, or `ocd categorize --finalize` to accept as-is.")
 
 
 @app.command()
@@ -158,7 +164,7 @@ def review(
         meta = do_finalize(df)
         typer.secho(f"Finalized {meta.n_transactions} transactions.", fg="green")
     else:
-        typer.echo("\nEdit categories in `ocd app`, or pass --finalize to accept as-is.")
+        typer.echo("\nEdit categories in `ocd serve`, or pass --finalize to accept as-is.")
 
 
 @app.command()
@@ -177,16 +183,67 @@ def report(draft: bool = typer.Option(False, help="Allow report on a non-finaliz
         typer.echo(f"  - {i}")
 
 
-@app.command(name="app")
-def app_ui(
-    port: int = typer.Option(8501, help="Port for the Streamlit server."),
+@app.command()
+def pipeline(
+    no_memory: bool = typer.Option(False, help="Ignore learned merchant memory."),
+    llm_fallback: bool = typer.Option(
+        True, "--llm-fallback/--no-llm-fallback",
+        help="If deterministic parsing fails, read the PDF with the local LLM."),
+    progress_json: bool = typer.Option(
+        False, "--progress-json",
+        help="Emit machine-readable JSONL progress to stdout (used by the web server)."),
 ):
-    """Launch the Streamlit web UI."""
-    import subprocess
-    app_path = Path(__file__).with_name("app.py")
-    typer.echo(f"Launching Streamlit at http://localhost:{port} ...")
-    subprocess.run([sys.executable, "-m", "streamlit", "run", str(app_path),
-                    "--server.port", str(port)], check=False)
+    """Run the whole pipeline end-to-end (extract → categorize → finalize → report).
+
+    Normally prints the generated HTML report path on the last line. With ``--progress-json``
+    it instead emits one JSON object per line for each stage (the web server streams these)."""
+    import json
+
+    from .classify import run_categorize
+    from .extract import extract_statements
+    from .report import generate_report
+    from .review import finalize as do_finalize
+
+    def emit(**event):
+        if progress_json:
+            typer.echo(json.dumps(event))
+
+    emit(stage="extract", status="start")
+    res = extract_statements(
+        allow_llm_fallback=llm_fallback,
+        file_cb=lambda i, n, r: emit(stage="extract", i=i, n=n, file=r["file"],
+                                     method=r["method"], purchases=r["n"], status=r["status"]),
+    )
+    if res.transactions.empty:
+        emit(stage="error", detail="No transactions extracted from the statements.")
+        if not progress_json:
+            typer.secho("No transactions extracted from the statements.", fg="red")
+        raise typer.Exit(1)
+
+    emit(stage="categorize", status="start", n=int(res.transactions["description"].nunique()))
+    df = run_categorize(
+        use_memory=not no_memory,
+        progress_cb=lambda i, n, m: emit(stage="categorize", i=i, n=n, merchant=m),
+    )
+
+    emit(stage="report", status="start")
+    do_finalize(df)
+    out = generate_report(require_finalized=True)
+    emit(stage="done", report=str(out["html"]))
+    if not progress_json:
+        # Last stdout line = the HTML path, so non-streaming callers can locate the report.
+        typer.echo(str(out["html"]))
+
+
+@app.command(name="serve")
+def serve_cmd(
+    host: str = typer.Option("127.0.0.1", help="Host/interface to bind."),
+    port: int = typer.Option(8000, help="Port for the web server."),
+):
+    """Launch the local web server: upload PDFs in the browser, processed on this machine."""
+    from .server import serve
+    typer.secho(f"OCD web UI → http://{host}:{port}   (Ctrl-C to stop)", fg="cyan")
+    serve(host=host, port=port)
 
 
 if __name__ == "__main__":

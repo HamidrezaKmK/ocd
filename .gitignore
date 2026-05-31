@@ -216,3 +216,21 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Multi-user data: real statements + password hashes — never commit
+data/users/
+
+# Financial data — never commit
+data/statements/
+data/transactions_raw.csv
+data/transactions_categorized.csv
+data/transactions_categorized_previous.csv
+data/categorized_meta.yaml
+
+# Learned merchant memory contains real merchant names — never commit
+config/merchant_memory.yaml
+
+# Generated reports may contain real transaction data
+reports/
+
+.claude/

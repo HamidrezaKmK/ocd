@@ -192,14 +192,15 @@ def classify_transactions(
 
 
 def run_categorize(
-    raw_csv: Path = paths.RAW_CSV,
-    output_csv: Path = paths.CATEGORIZED_CSV,
+    raw_csv: Optional[Path] = None,
+    output_csv: Optional[Path] = None,
     categories: Optional[CategoryConfig] = None,
     use_memory: bool = True,
     progress_cb: Optional[Callable[[int, int, str], None]] = None,
 ) -> pd.DataFrame:
     """Load raw CSV, classify, write a *draft* categorized CSV, and mark the run not-finalized."""
-    raw_csv = Path(raw_csv)
+    raw_csv = Path(raw_csv) if raw_csv is not None else paths.RAW_CSV
+    output_csv = output_csv if output_csv is not None else paths.CATEGORIZED_CSV
     if not raw_csv.exists():
         raise FileNotFoundError(f"{raw_csv} not found. Run `ocd extract` first.")
     df = pd.read_csv(raw_csv)

@@ -134,9 +134,48 @@ def fig_category_share(agg: Aggregates) -> go.Figure:
     return fig
 
 
+def fig_budget_ratio(agg: Aggregates, categories: CategoryConfig, window: int = 30) -> go.Figure:
+    """Trailing ``window``-day spend per category as a ratio of its monthly limit.
+
+    Normalizes every category onto the same scale: **1.0 means spending exactly at the
+    monthly budget**, so anything poking above the dashed 1.0 line is over budget — and
+    *how far* above is directly comparable across categories regardless of dollar size.
+    Categories without a monthly limit are omitted (nothing to normalize against)."""
+    df = agg.df.copy()
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df = df.dropna(subset=["date"])
+
+    fig = go.Figure()
+    if not df.empty:
+        daily = (df.groupby([df["date"].dt.normalize(), "category"])["amount"].sum()
+                   .unstack(fill_value=0.0))
+        full = pd.date_range(daily.index.min(), daily.index.max(), freq="D")
+        daily = daily.reindex(full, fill_value=0.0)
+        trailing = daily.rolling(window=window, min_periods=1).sum()  # trailing N-day spend
+        for cat in trailing.columns:
+            limit = categories.limit_for(cat)
+            if not limit:
+                continue
+            fig.add_trace(go.Scatter(
+                x=list(trailing.index), y=(trailing[cat] / limit).round(3),
+                mode="lines", name=cat,
+                hovertemplate=f"<b>{cat}</b><br>%{{x|%Y-%m-%d}}: %{{y:.2f}}× limit<extra></extra>",
+            ))
+    fig.add_hline(y=1.0, line_dash="dash", line_color="#d62728",
+                  annotation_text="monthly limit (1.0×)", annotation_position="top left")
+    fig.update_layout(
+        title=f"{window}-day spending vs. limit (1.0× = at budget; above = over)",
+        template="plotly_white", xaxis_title="Date",
+        yaxis_title=f"{window}-day spend ÷ monthly limit", hovermode="x unified",
+        legend_title="Category", margin=dict(t=60, l=60, r=30, b=50),
+    )
+    return fig
+
+
 def build_figures(agg: Aggregates, categories: CategoryConfig) -> dict[str, go.Figure]:
     return {
         "trend": fig_monthly_trend(agg),
+        "ratio": fig_budget_ratio(agg, categories),
         "budget": fig_spend_vs_budget(agg, categories),
         "share": fig_category_share(agg),
     }
@@ -145,40 +184,76 @@ def build_figures(agg: Aggregates, categories: CategoryConfig) -> dict[str, go.F
 # --------------------------------------------------------------------------- #
 # Insights
 # --------------------------------------------------------------------------- #
-def rule_based_insights(agg: Aggregates, categories: CategoryConfig) -> list[str]:
-    out: list[str] = []
-    if agg.n_transactions == 0:
-        return ["No transactions to analyze."]
+def _pretty_merchant(description: str, maxlen: int = 36) -> str:
+    """Make an ALL-CAPS, code-laden statement description nicer to read."""
+    s = " ".join(str(description).split()).title()
+    return (s[: maxlen - 1] + "…") if len(s) > maxlen else s
 
+
+def rule_based_insights(agg: Aggregates, categories: CategoryConfig) -> list[str]:
+    """Friendly, human-readable bullet insights (Markdown bold + a leading emoji each)."""
+    if agg.n_transactions == 0:
+        return ["🗂️ Nothing to analyze yet — add some statements and run the pipeline."]
+
+    df = agg.df
+    out: list[str] = []
     n_months = max(len(agg.months), 1)
+    per_month = agg.total / n_months
+
+    # 1) Headline
+    span = "this month" if n_months == 1 else f"over {n_months} months"
     out.append(
-        f"**${agg.total:,.2f}** across **{agg.n_transactions}** purchases over "
-        f"**{n_months}** month(s) — about **${agg.total / n_months:,.2f}/month**."
+        f"💸 You spent **${agg.total:,.0f}** {span} across **{agg.n_transactions}** purchases — "
+        f"that's about **${per_month:,.0f} a month**."
     )
 
+    # 2) Where the money went
     top = agg.by_category.head(3)
-    parts = [f"{r['category']} (${r['amount']:,.0f}, {r['share']:.0f}%)" for _, r in top.iterrows()]
-    if parts:
-        out.append("Top categories: " + ", ".join(parts) + ".")
+    if not top.empty:
+        parts = [f"**{r['category']}** (${r['amount']:,.0f}, {r['share']:.0f}%)"
+                 for _, r in top.iterrows()]
+        cat_str = parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + f", and {parts[-1]}"
+        out.append(f"🏆 Most of your money went to {cat_str}.")
 
+    # 3) Largest single purchase
+    big = df.loc[df["amount"].idxmax()]
+    when = f" on {big['date']}" if "date" in df.columns and pd.notna(big.get("date")) else ""
+    out.append(f"🧾 Your biggest single purchase was **${float(big['amount']):,.0f}** at "
+               f"{_pretty_merchant(big['description'])}{when}.")
+
+    # 4) Go-to merchant (only if there's a clear repeat)
+    if "merchant_key" in df.columns:
+        counts = df["merchant_key"].value_counts()
+        if len(counts) and int(counts.iloc[0]) >= 3:
+            key = counts.index[0]
+            spent = float(df.loc[df["merchant_key"] == key, "amount"].sum())
+            out.append(f"🔁 Your go-to spot was **{_pretty_merchant(key)}** — "
+                       f"{int(counts.iloc[0])} visits totalling **${spent:,.0f}**.")
+
+    # 5) Budget health
     if agg.over_limit:
-        worst = sorted(agg.over_limit, key=lambda o: o["over_by"], reverse=True)
-        bullets = [f"{o['category']} in {o['month_label']}: ${o['spent']:,.0f} vs "
-                   f"${o['limit']:,.0f} limit (over by ${o['over_by']:,.0f})" for o in worst[:4]]
-        out.append("⚠️ Over budget — " + "; ".join(bullets) + ".")
+        worst = sorted(agg.over_limit, key=lambda o: o["over_by"], reverse=True)[:3]
+        bullets = [f"**{o['category']}** ({o['month_label']}, ${o['spent']:,.0f} vs ${o['limit']:,.0f})"
+                   for o in worst]
+        out.append("⚠️ You went over budget in " + "; ".join(bullets) + ".")
     else:
-        out.append("✅ Every category stayed within its monthly limit.")
+        out.append("🎉 Nice — every category stayed within its monthly limit.")
 
-    # Month-over-month movement of the largest category.
+    # 6) Month-over-month movement of the top category
     if len(agg.months) >= 2 and not agg.by_category.empty:
         top_cat = agg.by_category.iloc[0]["category"]
         series = agg.by_cat_month[top_cat]
         prev, curr = float(series.iloc[-2]), float(series.iloc[-1])
         if prev > 0:
             chg = (curr - prev) / prev * 100
-            arrow = "↑" if chg >= 0 else "↓"
-            out.append(f"{top_cat} {arrow} {abs(chg):.0f}% month-over-month "
-                       f"(${prev:,.0f} → ${curr:,.0f}).")
+            if chg >= 5:
+                out.append(f"📈 {top_cat} spending climbed **{chg:.0f}%** last month "
+                           f"(${prev:,.0f} → ${curr:,.0f}) — worth a glance.")
+            elif chg <= -5:
+                out.append(f"📉 Nice trim: {top_cat} spending fell **{abs(chg):.0f}%** last month "
+                           f"(${prev:,.0f} → ${curr:,.0f}).")
+            else:
+                out.append(f"➡️ {top_cat} spending held steady month-over-month (~${curr:,.0f}).")
     return out
 
 
@@ -242,6 +317,7 @@ _HTML_TEMPLATE = Template("""<!DOCTYPE html>
   </div>
 
   <div class="card">{{ fig_trend }}</div>
+  <div class="card">{{ fig_ratio }}</div>
   <div class="card">{{ fig_budget }}</div>
   <div class="card">{{ fig_share }}</div>
 
@@ -295,6 +371,7 @@ def render_html(agg: Aggregates, categories: CategoryConfig, figures: dict[str, 
         insights_html=[_md_bold(i) for i in insights],
         llm_summary=summary,
         fig_trend=_to_div(figures["trend"]),
+        fig_ratio=_to_div(figures["ratio"]),
         fig_budget=_to_div(figures["budget"]),
         fig_share=_to_div(figures["share"]),
         cat_rows=_cat_rows(agg, categories),
@@ -335,7 +412,7 @@ def render_markdown(agg: Aggregates, categories: CategoryConfig, insights: list[
 # Entry point
 # --------------------------------------------------------------------------- #
 def generate_report(
-    categorized_csv: Path = paths.CATEGORIZED_CSV,
+    categorized_csv: Optional[Path] = None,
     categories: Optional[CategoryConfig] = None,
     require_finalized: bool = True,
     generated: Optional[str] = None,
@@ -346,11 +423,11 @@ def generate_report(
     meta = cfg.load_meta()
     if require_finalized and not meta.finalized:
         raise NotFinalizedError(
-            "Categorization is not finalized yet. Review and finalize in Step 2 "
-            "(`ocd app` or `ocd categorize --finalize`) before generating the report."
+            "Categorization is not finalized yet. Review and finalize "
+            "(in the web app or `ocd categorize --finalize`) before generating the report."
         )
 
-    df = pd.read_csv(categorized_csv)
+    df = pd.read_csv(categorized_csv if categorized_csv is not None else paths.CATEGORIZED_CSV)
     agg = compute_aggregates(df, categories)
     figures = build_figures(agg, categories)
     insights = rule_based_insights(agg, categories)

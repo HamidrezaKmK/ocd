@@ -53,8 +53,8 @@ class ReviewState:
         return len(self.items)
 
 
-def load_categorized(path: Path = paths.CATEGORIZED_CSV) -> pd.DataFrame:
-    path = Path(path)
+def load_categorized(path: Optional[Path] = None) -> pd.DataFrame:
+    path = Path(path) if path is not None else paths.CATEGORIZED_CSV
     if not path.exists():
         raise FileNotFoundError(f"{path} not found. Run `ocd categorize` first.")
     return pd.read_csv(path)
@@ -174,10 +174,10 @@ def apply_corrections(df: pd.DataFrame, corrections: dict[int, str]) -> pd.DataF
     return df
 
 
-def save_draft(df: pd.DataFrame, path: Path = paths.CATEGORIZED_CSV) -> None:
+def save_draft(df: pd.DataFrame, path: Optional[Path] = None) -> None:
     """Persist edits without finalizing (keeps the gate closed)."""
     paths.ensure_dirs()
-    df.to_csv(path, index=False)
+    df.to_csv(path if path is not None else paths.CATEGORIZED_CSV, index=False)
     cfg.mark_draft(n_transactions=len(df))
 
 
